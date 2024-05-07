@@ -1,0 +1,6 @@
+farm-haystack[faiss,inference]
+haystack-entailment-checker
+plotly
+pydantic
+streamlit
+altair
