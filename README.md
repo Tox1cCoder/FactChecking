@@ -1,8 +1,8 @@
 # Fact Checking
 
 ### Indexing pipeline
-* [Crawling](https://github.com/Tox1cCoder/Rocks-checking/tree/main/notebooks/get_wikipedia_data.ipynb): Crawl data from Wikipedia, starting from the page [List of mainstream rock performers](https://en.wikipedia.org/wiki/List_of_mainstream_rock_performers) and using the [python wrapper](https://github.com/goldsmith/Wikipedia)
-* [Indexing](https://github.com/Tox1cCoder/Rocks-checking/tree/main/notebooks/indexing.ipynb)
+* [Crawling](https://github.com/Tox1cCoder/FactChecking/blob/main/notebooks/get_wikipedia_data.ipynb): Crawl data from Wikipedia, starting from the page [List of mainstream rock performers](https://en.wikipedia.org/wiki/List_of_mainstream_rock_performers) and using the [python wrapper](https://github.com/goldsmith/Wikipedia)
+* [Indexing](https://github.com/Tox1cCoder/FactChecking/blob/main/notebooks/indexing.ipynb)
   * Preprocess the downloaded documents into chunks consisting of 2 sentences
   * Chunks with less than 10 words are discarded, because they are not very informative
   * Instantiate a [FAISS](https://github.com/facebookresearch/faiss) Document store and store the passages on it
