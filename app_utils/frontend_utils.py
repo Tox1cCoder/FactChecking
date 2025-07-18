@@ -17,7 +17,7 @@ def build_sidebar():
     <h1 style='text-align: center'>Fact Checking 🎸 Rocks!</h1>
     <div style='text-align: center'>
     <i>Fact checking baseline combining dense retrieval and textual entailment</i>
-    <p><br/><a href='https://github.com/NgoDangKhoauit/Rocks-checking'>Github project</a> - Based on <a href='https://github.com/deepset-ai/haystack'>Haystack</a></p>
+    <p><br/><a href='https://github.com/Tox1cCoder/FactChecking'>Github project</a> - Based on <a href='https://github.com/deepset-ai/haystack'>Haystack</a></p>
     <p><small><a href='https://en.wikipedia.org/wiki/List_of_mainstream_rock_performers'>Data crawled from Wikipedia</a></small></p>
     </div>
     """
@@ -80,8 +80,7 @@ def create_ternary_plot(entailment_data):
 
 def makeAxis(title, tickangle):
     return {
-        "title": title,
-        "titlefont": {"size": 20},
+        "title": {"text": title, "font": {"size": 20}},
         "tickangle": tickangle,
         "tickcolor": "rgba(0,0,0,0)",
         "ticklen": 5,
@@ -98,18 +97,41 @@ def create_df_for_relevant_snippets(docs):
     rows = []
     urls = {}
     for doc in docs:
+        # Handle both old and new document structure
+        title = doc.meta.get("title", doc.meta.get("name", "Unknown"))
+        url = doc.meta.get("url", "#")
+
+        # Get relevance score (might be in different places)
+        relevance = getattr(doc, "score", 0.0)
+        if relevance == 0.0 and "score" in doc.meta:
+            relevance = doc.meta["score"]
+
+        # Get entailment info
+        entailment_info = doc.meta.get(
+            "entailment_info",
+            {"contradiction": 0.33, "neutral": 0.34, "entailment": 0.33},
+        )
+
         row = {
-            "Title": doc.meta["name"],
-            "Relevance": f"{doc.score:.3f}",
-            "con": f"{doc.meta['entailment_info']['contradiction']:.2f}",
-            "neu": f"{doc.meta['entailment_info']['neutral']:.2f}",
-            "ent": f"{doc.meta['entailment_info']['entailment']:.2f}",
+            "Title": title,
+            "Relevance": f"{relevance:.3f}",
+            "con": f"{entailment_info['contradiction']:.2f}",
+            "neu": f"{entailment_info['neutral']:.2f}",
+            "ent": f"{entailment_info['entailment']:.2f}",
             "Content": doc.content,
         }
-        urls[doc.meta["name"]] = doc.meta["url"]
+        urls[title] = url
         rows.append(row)
+
+    if rows:
         df = pd.DataFrame(rows)
         df["Content"] = df["Content"].str.wrap(75)
+        df = df.style.apply(highlight_cols)
+    else:
+        # Return empty dataframe with correct columns
+        df = pd.DataFrame(
+            columns=["Title", "Relevance", "con", "neu", "ent", "Content"]
+        )
         df = df.style.apply(highlight_cols)
 
     return df, urls

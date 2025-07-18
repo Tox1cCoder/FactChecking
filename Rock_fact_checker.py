@@ -37,7 +37,11 @@ def main():
     )
     # Search bar
     statement = st.text_input(
-        "", value=st.session_state.statement, max_chars=100, on_change=reset_results
+        "Statement to check:",
+        value=st.session_state.statement,
+        max_chars=100,
+        on_change=reset_results,
+        label_visibility="collapsed",
     )
     col1, col2 = st.columns(2)
     col1.markdown(
@@ -58,13 +62,7 @@ def main():
         st.session_state.statement = statement
         st.session_state.random_statement_requested = True
         # Re-runs the script setting the random statement as the textbox value
-        if hasattr(st, "scriptrunner"):
-            raise st.scriptrunner.script_runner.RerunException(
-                st.scriptrunner.script_requests.RerunData(widget_states=None)
-            )
-        raise st.runtime.scriptrunner.script_runner.RerunException(
-            st.runtime.scriptrunner.script_requests.RerunData(widget_states=None)
-        )
+        st.rerun()
     else:
         st.session_state.random_statement_requested = False
     run_query = (
